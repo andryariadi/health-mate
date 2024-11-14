@@ -15,10 +15,10 @@ export default {
     },
     extend: {
       colors: {
-        green: {
-          500: "#24AE7C",
-          600: "#0D2A1F",
-        },
+        // green: {
+        //   500: "#24AE7C",
+        //   600: "#0D2A1F",
+        // },
         blue: {
           500: "#79B5EC",
           600: "#152432",
