@@ -40,18 +40,17 @@ const PatientForm = () => {
 
   const handleSubmitUser: SubmitHandler<z.infer<typeof UserFormValidation>> = async (data) => {
     console.log(data, "<---dihandlesubmitUser");
+    const res = await createUser(data);
 
-    const user = await createUser(data);
-
-    if (user?.success) {
-      toast.success("User create succesfully!", {
+    if ((res as { success: boolean; message: string }).success) {
+      toast.success((res as { success: boolean; message: string }).message, {
         style: toastStyle,
       });
+
+      router.push(`/patients/${res?.newUser?.$id}/register`);
     }
 
-    if (user) router.push(`/patients/${user.id}/register`);
-
-    console.log(user, "<---dihandlesubmitUser2");
+    console.log(res, "<---dihandlesubmitUser2");
   };
 
   return (

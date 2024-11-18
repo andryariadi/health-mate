@@ -11,7 +11,7 @@ export const createUser = async (data: z.infer<typeof UserFormValidation>) => {
   try {
     const newUser = await users.create(ID.unique(), data.email, data.phone, undefined, data.name);
 
-    if (newUser) return { success: true };
+    if (newUser) return { newUser, success: true, message: "User create succesfully!" };
   } catch (error: any) {
     console.log(error, "<---dicreateUserActionError");
     if (error && error?.code === 409) {
