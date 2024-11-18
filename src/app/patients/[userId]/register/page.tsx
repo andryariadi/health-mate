@@ -1,3 +1,4 @@
+import RegisterForm from "@/components/forms/RegisterForm";
 import Image from "next/image";
 
 const PatientRegisterPage = () => {
@@ -5,7 +6,7 @@ const PatientRegisterPage = () => {
     <div className="bg-violet-500 max-h-screen h-screen flex">
       {/* Left */}
       <section className="bg-amber-500 remove-scrollbar container">
-        <div className="bg-sky-600 sub-container max-w-[860px] flex-1">
+        <div className="bg-sky-600 sub-container max-w-[860px] flex-1 space-y-10">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="logo" width={35} height={35} />
@@ -13,14 +14,17 @@ const PatientRegisterPage = () => {
           </div>
 
           <div className="space-y-1">
-            <h1 className="header">Hi there... 👋</h1>
-            <span className="text-14-regular text-dark-700">Schedule your first appointments.</span>
+            <h1 className="header">Welcome... 👋</h1>
+            <span className="text-14-regular text-dark-700">Let us know about yourself.</span>
           </div>
+
+          {/* Form */}
+          <RegisterForm />
         </div>
       </section>
 
       {/* Right */}
-      <section className="bg-rose-500">Andry</section>
+      <Image src="/assets/images/register-img.png" height={1000} width={1000} alt="patient" className="side-img max-w-[390px]" />
     </div>
   );
 };
