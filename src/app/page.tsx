@@ -15,8 +15,8 @@ export default function Home() {
           </div>
 
           <div className="space-y-1">
-            <h1 className="text-36-bold">Hi there, ...</h1>
-            <span className="text-14-regular">Schedule your first appointments.</span>
+            <h1 className="header">Hi there... 👋</h1>
+            <span className="text-14-regular text-dark-700">Schedule your first appointments.</span>
           </div>
 
           {/* Form */}

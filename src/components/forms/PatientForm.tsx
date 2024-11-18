@@ -10,12 +10,23 @@ import { BiLoaderCircle } from "react-icons/bi";
 import { BsSend } from "react-icons/bs";
 import { motion } from "framer-motion";
 import { HiOutlineMail } from "react-icons/hi";
-import { MdOutlineLocalPhone } from "react-icons/md";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+// import E164Number from "react-phone-number-input";
+import { useState } from "react";
 
 const PatientForm = () => {
+  const [phoneValue, setPhoneValue] = useState<string | undefined>();
+
+  const handlePhoneChange = (phone?: string) => {
+    setValue("phone", phone ?? "");
+    setPhoneValue(phone);
+  };
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
@@ -40,9 +51,7 @@ const PatientForm = () => {
       </div>
 
       <div className="relative">
-        <InputField icon={<MdOutlineLocalPhone size={22} />} type="text" placeholder="Phone Number" name="phone" propData={{ ...register("phone") }} />
-
-        {errors.phone && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.phone.message as string}</p>}
+        <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Phone Number" value={phoneValue} onChange={handlePhoneChange} className="input-phone" />
       </div>
 
       <motion.button
