@@ -14,8 +14,14 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 // import E164Number from "react-phone-number-input";
 import { useState } from "react";
+import { createUser } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { toastStyle } from "@/lib/utils";
 
 const PatientForm = () => {
+  const router = useRouter();
+
   const [phoneValue, setPhoneValue] = useState<string | undefined>();
 
   const handlePhoneChange = (phone?: string) => {
@@ -34,6 +40,18 @@ const PatientForm = () => {
 
   const handleSubmitUser: SubmitHandler<z.infer<typeof UserFormValidation>> = async (data) => {
     console.log(data, "<---dihandlesubmitUser");
+
+    const user = await createUser(data);
+
+    if (user?.success) {
+      toast.success("User create succesfully!", {
+        style: toastStyle,
+      });
+    }
+
+    if (user) router.push(`/patients/${user.id}/register`);
+
+    console.log(user, "<---dihandlesubmitUser2");
   };
 
   return (
@@ -52,6 +70,8 @@ const PatientForm = () => {
 
       <div className="relative">
         <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Phone Number" value={phoneValue} onChange={handlePhoneChange} className="input-phone" />
+
+        {errors.phone && <p className="absolute -bottom-5 text-red-500 text-sm">Phone is {errors.phone.message as string}</p>}
       </div>
 
       <motion.button
