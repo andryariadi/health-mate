@@ -11,70 +11,105 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { useState } from "react";
 import GenderRadio from "../GenderRadio";
+import { BiLoaderCircle } from "react-icons/bi";
+import { BsSend } from "react-icons/bs";
+import { motion } from "framer-motion";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { PatientFormValidation } from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const RegisterForm = () => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>();
-  const [emergencyContact, setEmergencyContact] = useState<string | undefined>();
-  const [selectedGender, setSelectedGender] = useState("");
+  const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
+  const [selectedGender, setSelectedGender] = useState<"" | "Male" | "Female" | "Other">("");
 
   const handlePhoneChange = (phone?: string) => {
-    // setValue("phone", phone ?? "");
+    setValue("phone", phone ?? "");
     setPhoneValue(phone);
   };
 
-  const handleEmergencyContactChange = (phone?: string) => {
-    // setValue("phone", phone ?? "");
-    setEmergencyContact(phone);
+  const handleEmergencyContactChange = (emergencyContactNumber?: string) => {
+    setValue("emergencyContactNumber", emergencyContactNumber ?? "");
+    setEmergencyContactNumber(emergencyContactNumber);
   };
 
-  const handleCheckboxChange = (gender?: string) => {
-    // setValue("gender", gender);
-    setSelectedGender(gender);
+  const handleCheckboxChange = (gender?: "Male" | "Female" | "Other") => {
+    setValue("gender", gender ?? "Male");
+    setSelectedGender(gender ?? "");
   };
 
-  const errors = "";
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<z.infer<typeof PatientFormValidation>>({
+    resolver: zodResolver(PatientFormValidation),
+  });
+
+  const handleSubmitRegister: SubmitHandler<z.infer<typeof PatientFormValidation>> = async (data) => {
+    console.log(data, "<---dihandleSubmitRegister");
+  };
+
+  console.log(errors, "<---diregisterForm");
 
   return (
-    <form className="bg-rose-600 space-y-10">
+    <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">
       {/* Personal Information */}
       <section className="bg-violet-500 space-y-5">
         <h2 className="sub-header">Personal Information</h2>
-
         <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="relative col-span-2">
-            <InputField icon={<FaBarsStaggered size={18} />} type="text" placeholder="Full Name" name="name" />
+            <InputField icon={<FaBarsStaggered size={18} />} type="text" placeholder="Full Name" name="name" propData={{ ...register("name") }} />
+
+            {errors.name && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.name.message as string}</p>}
           </div>
 
           <div className="relative">
-            <InputField icon={<HiOutlineMail size={22} />} type="email" placeholder="Email" name="email" />
+            <InputField icon={<HiOutlineMail size={22} />} type="email" placeholder="Email" name="email" propData={{ ...register("email") }} />
+
+            {errors.email && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.email.message as string}</p>}
           </div>
 
           <div className="relative">
             <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Phone Number" value={phoneValue} onChange={handlePhoneChange} className="input-phone" />
+
+            {errors.phone && phoneValue === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Phone is {errors.phone.message as string}</p>}
           </div>
 
           <div className="relative">
-            <InputField icon={<CiCalendar size={22} />} type="text" placeholder="Date of birth" name="name" />
+            <InputField icon={<CiCalendar size={22} />} type="text" placeholder="Date of birth" name="birthDate" propData={{ ...register("birthDate") }} />
+
+            {errors.birthDate && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.birthDate.message as string}</p>}
           </div>
 
           <div className="relative">
-            <GenderRadio onRadioChange={handleCheckboxChange} selectedGender={selectedGender} errors={errors} />
+            <GenderRadio onRadioChange={handleCheckboxChange} selectedGender={selectedGender} errors={{ gender: errors?.gender as { message: string } | undefined }} />
           </div>
 
           <div className="relative">
-            <InputField icon={<IoLocationOutline size={22} />} type="text" placeholder="Address" name="name" />
+            <InputField icon={<IoLocationOutline size={22} />} type="text" placeholder="Address" name="address" propData={{ ...register("address") }} />
+
+            {errors.address && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.address.message as string}</p>}
           </div>
 
           <div className="relative">
-            <InputField icon={<PiBag size={22} />} type="text" placeholder="Occupation" name="name" />
+            <InputField icon={<PiBag size={22} />} type="text" placeholder="Occupation" name="occupation" propData={{ ...register("occupation") }} />
+
+            {errors.occupation && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.occupation.message as string}</p>}
           </div>
 
           <div className="relative">
-            <InputField icon={<TiContacts size={18} />} type="text" placeholder="Emergency contact name" name="name" />
+            <InputField icon={<TiContacts size={18} />} type="text" placeholder="Emergency contact name" name="emergencyContactName" propData={{ ...register("emergencyContactName") }} />
+
+            {errors.emergencyContactName && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.emergencyContactName.message as string}</p>}
           </div>
 
           <div className="relative">
-            <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Phone Number" value={emergencyContact} onChange={handleEmergencyContactChange} className="input-phone" />
+            <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Emergency contact number" value={emergencyContactNumber} onChange={handleEmergencyContactChange} className="input-phone" />
+
+            {errors.emergencyContactNumber && emergencyContactNumber === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Emergency Contact Phone is {errors.emergencyContactNumber.message as string}</p>}
           </div>
         </div>
       </section>
@@ -93,6 +128,23 @@ const RegisterForm = () => {
       <section className="bg-emerald-500">
         <h2 className="sub-header">Consent and Privacy</h2>
       </section>
+
+      <motion.button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-3"
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {isSubmitting ? (
+          <BiLoaderCircle size={22} className="animate-spin mx-auto" />
+        ) : (
+          <>
+            <span>Submit and Continue</span>
+            <BsSend size={18} />
+          </>
+        )}
+      </motion.button>
     </form>
   );
 };
