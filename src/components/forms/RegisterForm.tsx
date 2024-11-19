@@ -13,18 +13,24 @@ import { useState } from "react";
 import GenderRadio from "../GenderRadio";
 import { BiLoaderCircle } from "react-icons/bi";
 import { BsSend } from "react-icons/bs";
-import { RiServiceLine, RiCustomerService2Line } from "react-icons/ri";
+import { RiServiceLine, RiCustomerService2Line, RiSortNumberDesc } from "react-icons/ri";
 import { motion } from "framer-motion";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { PatientFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextareaField from "../TextareaField";
+import { Doctors, IdentificationTypes } from "@/constants";
+import Image from "next/image";
+import PrivacyCheckbox from "../PrivacyCheckbox";
 
 const RegisterForm = () => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>();
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
   const [selectedGender, setSelectedGender] = useState<"" | "Male" | "Female" | "Other">("Male");
+  const [treatmentConsent, setTreatmentConsent] = useState<false | true>(false);
+  const [disclosureConsent, setDisclosureConsent] = useState<false | true>(false);
+  const [privacyConsent, setPrivacyConsent] = useState<false | true>(false);
 
   const handlePhoneChange = (phone?: string) => {
     setValue("phone", phone ?? "");
@@ -41,6 +47,21 @@ const RegisterForm = () => {
     setSelectedGender(gender ?? "");
   };
 
+  const onTreatmentConsentChange = (treatmentConsent?: false | true) => {
+    setValue("treatmentConsent", treatmentConsent ?? false);
+    setTreatmentConsent(treatmentConsent ?? false);
+  };
+
+  const onDisclosureConsentChange = (disclosureConsent?: false | true) => {
+    setValue("disclosureConsent", disclosureConsent ?? false);
+    setDisclosureConsent(disclosureConsent ?? false);
+  };
+
+  const onPrivacyConsentChange = (privacyConsent?: false | true) => {
+    setValue("privacyConsent", privacyConsent ?? false);
+    setPrivacyConsent(privacyConsent ?? false);
+  };
+
   const {
     register,
     handleSubmit,
@@ -54,7 +75,7 @@ const RegisterForm = () => {
     console.log(data, "<---dihandleSubmitRegister");
   };
 
-  console.log(errors, "<---diregisterForm");
+  console.log({ errors, treatmentConsent }, "<---diregisterForm");
 
   return (
     <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">
@@ -121,6 +142,24 @@ const RegisterForm = () => {
         <h2 className="sub-header">Medical Information</h2>
 
         <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="relative col-span-2">
+            <select
+              id="primaryPhysician"
+              className="w-full pl-4 py-3 bg-dark-400 rounded-lg outline-none border border-gray-800 focus:border-green-500  placeholder:text-sm placeholder-gray-400 placeholder-opacity-50 transition-all duration-300 text-sm text-gray-500 cursor-pointer"
+              {...register("primaryPhysician")}
+            >
+              <option value="">Primary cara physician</option>
+              {Doctors.map((doctor, i) => (
+                <option key={i} value={doctor.name} className="flex items-center gap-2">
+                  <Image src={doctor.image} width={50} height={50} alt="doctor" />
+                  <span>{doctor.name}</span>
+                </option>
+              ))}
+            </select>
+
+            {errors.primaryPhysician && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.primaryPhysician.message as string}</p>}
+          </div>
+
           <div className="relative">
             <InputField icon={<RiServiceLine size={18} />} type="text" placeholder="Insurance Provider" name="insuranceProvider" propData={{ ...register("insuranceProvider") }} />
 
@@ -160,13 +199,58 @@ const RegisterForm = () => {
       </section>
 
       {/* Identification and Verification */}
-      <section className="bg-sky-500">
+      <section className="bg-sky-500 space-y-5">
         <h2 className="sub-header">Identification and Verification</h2>
+
+        <div className="bg-lime-600 grid grid-cols-1 gap-10">
+          <div className="relative">
+            <select
+              id="identificationType"
+              className="w-full pl-4 py-3 bg-dark-400 rounded-lg outline-none border border-gray-800 focus:border-green-500  placeholder:text-sm placeholder-gray-400 placeholder-opacity-50 transition-all duration-300 text-sm text-gray-500 cursor-pointer"
+              {...register("identificationType")}
+            >
+              <option value="">Identification type</option>
+              {IdentificationTypes.map((type, i) => (
+                <option key={i} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+
+            {errors.identificationType && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.identificationType.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <InputField icon={<RiSortNumberDesc size={18} />} type="text" placeholder="Identification Number" name="identificationNumber" propData={{ ...register("identificationNumber") }} />
+
+            {errors.identificationNumber && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.identificationNumber.message as string}</p>}
+          </div>
+        </div>
       </section>
 
       {/* Consent and Privacy */}
-      <section className="bg-emerald-500">
+      <section className="bg-emerald-500 space-y-5">
         <h2 className="sub-header">Consent and Privacy</h2>
+
+        <div className="bg-lime-600 grid grid-cols-1 gap-7">
+          <PrivacyCheckbox label="I consent to receive treatment for my health condition." onCheckboxChange={onTreatmentConsentChange} selectedBoolean={treatmentConsent} error={errors.treatmentConsent?.message as string} />
+
+          <PrivacyCheckbox
+            label="I consent to the use and disclosure of my health
+            information for treatment purposes."
+            onCheckboxChange={onDisclosureConsentChange}
+            selectedBoolean={disclosureConsent}
+            error={errors.disclosureConsent?.message as string}
+          />
+
+          <PrivacyCheckbox
+            label="I acknowledge that I have reviewed and agree to the
+            privacy policy."
+            onCheckboxChange={onPrivacyConsentChange}
+            selectedBoolean={privacyConsent}
+            error={errors.privacyConsent?.message as string}
+          />
+        </div>
       </section>
 
       <motion.button
