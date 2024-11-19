@@ -13,16 +13,18 @@ import { useState } from "react";
 import GenderRadio from "../GenderRadio";
 import { BiLoaderCircle } from "react-icons/bi";
 import { BsSend } from "react-icons/bs";
+import { RiServiceLine, RiCustomerService2Line } from "react-icons/ri";
 import { motion } from "framer-motion";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { PatientFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import TextareaField from "../TextareaField";
 
 const RegisterForm = () => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>();
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
-  const [selectedGender, setSelectedGender] = useState<"" | "Male" | "Female" | "Other">("");
+  const [selectedGender, setSelectedGender] = useState<"" | "Male" | "Female" | "Other">("Male");
 
   const handlePhoneChange = (phone?: string) => {
     setValue("phone", phone ?? "");
@@ -101,13 +103,13 @@ const RegisterForm = () => {
           </div>
 
           <div className="relative">
-            <InputField icon={<TiContacts size={18} />} type="text" placeholder="Emergency contact name" name="emergencyContactName" propData={{ ...register("emergencyContactName") }} />
+            <InputField icon={<TiContacts size={18} />} type="text" placeholder="Emergency Contact Name" name="emergencyContactName" propData={{ ...register("emergencyContactName") }} />
 
             {errors.emergencyContactName && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.emergencyContactName.message as string}</p>}
           </div>
 
           <div className="relative">
-            <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Emergency contact number" value={emergencyContactNumber} onChange={handleEmergencyContactChange} className="input-phone" />
+            <PhoneInput defaultCountry="US" international withCountryCallingCode placeholder="Emergency Contact Number" value={emergencyContactNumber} onChange={handleEmergencyContactChange} className="input-phone" />
 
             {errors.emergencyContactNumber && emergencyContactNumber === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Emergency Contact Phone is {errors.emergencyContactNumber.message as string}</p>}
           </div>
@@ -115,8 +117,46 @@ const RegisterForm = () => {
       </section>
 
       {/* Medical Information */}
-      <section className="bg-fuchsia-500">
+      <section className="bg-fuchsia-500 space-y-5">
         <h2 className="sub-header">Medical Information</h2>
+
+        <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="relative">
+            <InputField icon={<RiServiceLine size={18} />} type="text" placeholder="Insurance Provider" name="insuranceProvider" propData={{ ...register("insuranceProvider") }} />
+
+            {errors.insuranceProvider && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.insuranceProvider.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <InputField icon={<RiCustomerService2Line size={18} />} type="text" placeholder="Insurance Policy Number" name="insurancePolicyNumber" propData={{ ...register("insurancePolicyNumber") }} />
+
+            {errors.insurancePolicyNumber && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.insurancePolicyNumber.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <TextareaField id="allergies" rows={5} cols={30} placeholder={`Allergies\nex: Peanuts, Penicillin, Pollen, etc.`} propsData={{ ...register("allergies") }} />
+
+            {errors.allergies && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.allergies.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <TextareaField id="currentMedication" rows={5} cols={30} placeholder={`Current Medication\nex: Ibuprofen 200mg, Levothyroxine 500mg, etc.`} propsData={{ ...register("currentMedication") }} />
+
+            {errors.currentMedication && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.currentMedication.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <TextareaField id="familyMedicalHistory" rows={5} cols={30} placeholder={`Family Medical History\nex: Mother had breast cancer, etc.`} propsData={{ ...register("familyMedicalHistory") }} />
+
+            {errors.familyMedicalHistory && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.familyMedicalHistory.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <TextareaField id="pastMedicalHistory" rows={5} cols={30} placeholder={`Past Medical History\nex: Asthma diagnosis in childhood, etc.`} propsData={{ ...register("pastMedicalHistory") }} />
+
+            {errors.pastMedicalHistory && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.pastMedicalHistory.message as string}</p>}
+          </div>
+        </div>
       </section>
 
       {/* Identification and Verification */}
