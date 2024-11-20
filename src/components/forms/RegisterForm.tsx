@@ -27,7 +27,7 @@ import PrivacyCheckbox from "../PrivacyCheckbox";
 const RegisterForm = () => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>();
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
-  const [selectedGender, setSelectedGender] = useState<"" | "Male" | "Female" | "Other">("Male");
+  const [selectedGender, setSelectedGender] = useState<"Male" | "Female" | "Other">("Male");
   const [treatmentConsent, setTreatmentConsent] = useState<false | true>(false);
   const [disclosureConsent, setDisclosureConsent] = useState<false | true>(false);
   const [privacyConsent, setPrivacyConsent] = useState<false | true>(false);
@@ -44,7 +44,7 @@ const RegisterForm = () => {
 
   const handleCheckboxChange = (gender?: "Male" | "Female" | "Other") => {
     setValue("gender", gender ?? "Male");
-    setSelectedGender(gender ?? "");
+    setSelectedGender(gender ?? "Male");
   };
 
   const onTreatmentConsentChange = (treatmentConsent?: false | true) => {
@@ -69,6 +69,9 @@ const RegisterForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
+    defaultValues: {
+      gender: "Male",
+    },
   });
 
   const handleSubmitRegister: SubmitHandler<z.infer<typeof PatientFormValidation>> = async (data) => {
@@ -108,7 +111,7 @@ const RegisterForm = () => {
           </div>
 
           <div className="relative">
-            <GenderRadio onRadioChange={handleCheckboxChange} selectedGender={selectedGender} errors={{ gender: errors?.gender as { message: string } | undefined }} />
+            <GenderRadio onRadioChange={handleCheckboxChange} selectedGender={selectedGender} errors={{ gender: errors?.gender as { message: string } }} />
           </div>
 
           <div className="relative">
