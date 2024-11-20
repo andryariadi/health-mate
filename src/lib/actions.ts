@@ -21,3 +21,13 @@ export const createUser = async (data: z.infer<typeof UserFormValidation>) => {
     }
   }
 };
+
+export const getUser = async (userId: string) => {
+  try {
+    const user = await users.get(userId);
+
+    return user;
+  } catch (error) {
+    console.log(error, "<---digetUserError");
+  }
+};

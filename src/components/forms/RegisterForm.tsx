@@ -26,8 +26,8 @@ import { Doctors, IdentificationTypes } from "@/constants";
 import Image from "next/image";
 import PrivacyCheckbox from "../PrivacyCheckbox";
 
-const RegisterForm = () => {
-  const [phoneValue, setPhoneValue] = useState<string | undefined>();
+const RegisterForm = ({ user }: { user: User }) => {
+  const [phoneValue, setPhoneValue] = useState<string | undefined>(user.phone);
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
 
   const [selectedGender, setSelectedGender] = useState<"Male" | "Female" | "Other">("Male");
@@ -81,6 +81,9 @@ const RegisterForm = () => {
   } = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
       gender: "Male",
       birthDate: new Date(),
     },
@@ -90,7 +93,7 @@ const RegisterForm = () => {
     console.log(data, "<---dihandleSubmitRegister");
   };
 
-  console.log({ errors, treatmentConsent, startDate }, "<---diregisterForm");
+  console.log({ user, errors, treatmentConsent, startDate }, "<---diregisterForm");
 
   return (
     <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">

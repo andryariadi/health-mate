@@ -1,7 +1,12 @@
 import RegisterForm from "@/components/forms/RegisterForm";
+import { getUser } from "@/lib/actions";
 import Image from "next/image";
 
-const PatientRegisterPage = () => {
+const PatientRegisterPage = async ({ params }: { params: { userId: string } }) => {
+  const { userId } = params;
+
+  const user = await getUser(userId);
+
   return (
     <div className="bg-violet-500 max-h-screen h-screen flex">
       {/* Left */}
@@ -19,7 +24,7 @@ const PatientRegisterPage = () => {
           </div>
 
           {/* Form */}
-          <RegisterForm />
+          {user && <RegisterForm user={user} />}
         </div>
       </section>
 
