@@ -9,6 +9,8 @@ import { PiBag } from "react-icons/pi";
 import { TiContacts } from "react-icons/ti";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 import { useState } from "react";
 import GenderRadio from "../GenderRadio";
 import { BiLoaderCircle } from "react-icons/bi";
@@ -27,10 +29,19 @@ import PrivacyCheckbox from "../PrivacyCheckbox";
 const RegisterForm = () => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>();
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
+
   const [selectedGender, setSelectedGender] = useState<"Male" | "Female" | "Other">("Male");
+
   const [treatmentConsent, setTreatmentConsent] = useState<false | true>(false);
   const [disclosureConsent, setDisclosureConsent] = useState<false | true>(false);
   const [privacyConsent, setPrivacyConsent] = useState<false | true>(false);
+
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+
+  const handleBirthdateChange = (birthDate: Date | null) => {
+    setValue("birthDate", birthDate ?? new Date());
+    setStartDate(birthDate);
+  };
 
   const handlePhoneChange = (phone?: string) => {
     setValue("phone", phone ?? "");
@@ -71,6 +82,7 @@ const RegisterForm = () => {
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       gender: "Male",
+      birthDate: new Date(),
     },
   });
 
@@ -78,7 +90,7 @@ const RegisterForm = () => {
     console.log(data, "<---dihandleSubmitRegister");
   };
 
-  console.log({ errors, treatmentConsent }, "<---diregisterForm");
+  console.log({ errors, treatmentConsent, startDate }, "<---diregisterForm");
 
   return (
     <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">
@@ -105,9 +117,11 @@ const RegisterForm = () => {
           </div>
 
           <div className="relative">
-            <InputField icon={<CiCalendar size={22} />} type="text" placeholder="Date of birth" name="birthDate" propData={{ ...register("birthDate") }} />
+            <DatePicker selected={startDate} onChange={handleBirthdateChange} timeInputLabel="Time:" dateFormat="yyyy/MM/dd" showTimeInput wrapperClassName="date-picker" />
 
-            {errors.birthDate && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.birthDate.message as string}</p>}
+            <CiCalendar size={22} className="absolute left-3 top-3 text-green-500" />
+
+            {errors.birthDate && startDate === null && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.birthDate.message as string}</p>}
           </div>
 
           <div className="relative">

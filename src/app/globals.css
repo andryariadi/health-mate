@@ -273,7 +273,7 @@
 
   /* =====  REACT DATE PICKER OVERRIDES */
   .date-picker {
-    @apply overflow-hidden border-transparent w-full placeholder:text-dark-600  h-11 text-14-medium rounded-md px-3 outline-none !important;
+    @apply relative overflow-hidden border-transparent w-full bg-dark-400 placeholder:text-dark-600 h-12 px-10 text-14-medium rounded-lg outline-none !important;
   }
 }
 
