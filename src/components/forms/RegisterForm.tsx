@@ -27,8 +27,12 @@ import Image from "next/image";
 import PrivacyCheckbox from "../PrivacyCheckbox";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import FileUploader from "../FileUploader";
+import { useRouter } from "next/navigation";
+import { registerPatient } from "@/lib/actions";
 
 const RegisterForm = ({ user }: { user: User }) => {
+  const router = useRouter();
+
   const [phoneValue, setPhoneValue] = useState<string | undefined>(user.phone);
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
 
@@ -106,7 +110,38 @@ const RegisterForm = ({ user }: { user: User }) => {
   });
 
   const handleSubmitRegister: SubmitHandler<z.infer<typeof PatientFormValidation>> = async (data) => {
-    console.log(data, "<---dihandleSubmitRegister");
+    let formData;
+
+    if (data.identificationDocument && data.identificationDocument.length > 0) {
+      const blobFile = new Blob([data.identificationDocument[0]], {
+        type: data.identificationDocument[0].type,
+      });
+
+      formData = new FormData();
+      formData.append("blobFile", blobFile);
+      formData.append("fileName", data.identificationDocument[0].name);
+
+      console.log({ blobFile, formData }, "<---dihandleSubmitRegister2");
+    }
+
+    try {
+      const patientData = {
+        ...data,
+        userId: user.$id,
+        birthDate: new Date(data.birthDate),
+        identificationDocument: formData,
+      };
+
+      const res = await registerPatient(patientData);
+
+      // if (res) router.push(`/patients/${user?.$id}/new-oppointment`);
+
+      console.log({ patientData }, "<---dihandleSubmitRegister3");
+    } catch (error) {
+      console.log(error, "<---dihandleSubmitRegisterError");
+    }
+
+    console.log({ data }, "<---dihandleSubmitRegister");
   };
 
   console.log({ user, errors, treatmentConsent, startDate, primaryPhysician, identificationDocument }, "<---diregisterForm");
@@ -269,7 +304,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           <div className="relative">
             <FileUploader files={identificationDocument} onChange={handleFileUploadChange} />
 
-            {errors.identificationDocument && <p className="absolute -bottom-5 text-violet-500 text-sm">{errors.identificationDocument.message as string}</p>}
+            {errors.identificationDocument && identificationDocument?.length === 0 && <p className="absolute -bottom-5 text-violet-500 text-sm">{errors.identificationDocument.message as string}</p>}
           </div>
         </div>
       </section>

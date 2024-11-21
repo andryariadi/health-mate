@@ -25,7 +25,13 @@ export const PatientFormValidation = z.object({
   pastMedicalHistory: z.string().optional(),
   identificationType: z.string().optional(),
   identificationNumber: z.string().optional(),
-  identificationDocument: z.custom<File[]>(),
+  identificationDocument: z
+    .custom<File[]>((value) => Array.isArray(value) && value.every((item) => item instanceof File), {
+      message: "Invalid file format",
+    })
+    .refine((files) => files && files.length > 0, {
+      message: "File is required",
+    }),
   treatmentConsent: z
     .boolean()
     .default(false)

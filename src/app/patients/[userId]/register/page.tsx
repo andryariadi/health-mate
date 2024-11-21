@@ -25,6 +25,8 @@ const PatientRegisterPage = async ({ params }: { params: { userId: string } }) =
 
           {/* Form */}
           {user && <RegisterForm user={user} />}
+
+          <p className="copyright">© 2024 HealthMate</p>
         </div>
       </section>
 
