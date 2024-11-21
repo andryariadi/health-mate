@@ -25,6 +25,8 @@ import TextareaField from "../TextareaField";
 import { Doctors, IdentificationTypes } from "@/constants";
 import Image from "next/image";
 import PrivacyCheckbox from "../PrivacyCheckbox";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import FileUploader from "../FileUploader";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>(user.phone);
@@ -37,6 +39,20 @@ const RegisterForm = ({ user }: { user: User }) => {
   const [privacyConsent, setPrivacyConsent] = useState<false | true>(false);
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
+
+  const [primaryPhysician, setPrimaryPhysician] = useState<string>();
+
+  const [identificationDocument, setIdentificationDocument] = useState<File[] | undefined>([]);
+
+  const handleFileUploadChange = (identificationDocument?: File[] | undefined) => {
+    setValue("identificationDocument", identificationDocument ?? []);
+    setIdentificationDocument(identificationDocument);
+  };
+
+  const handlePrimaryPhysicianChange = (primaryPhysician?: string) => {
+    setValue("primaryPhysician", primaryPhysician ?? "");
+    setPrimaryPhysician(primaryPhysician);
+  };
 
   const handleBirthdateChange = (birthDate: Date | null) => {
     setValue("birthDate", birthDate ?? new Date());
@@ -93,7 +109,7 @@ const RegisterForm = ({ user }: { user: User }) => {
     console.log(data, "<---dihandleSubmitRegister");
   };
 
-  console.log({ user, errors, treatmentConsent, startDate }, "<---diregisterForm");
+  console.log({ user, errors, treatmentConsent, startDate, primaryPhysician, identificationDocument }, "<---diregisterForm");
 
   return (
     <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">
@@ -163,21 +179,25 @@ const RegisterForm = ({ user }: { user: User }) => {
 
         <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="relative col-span-2">
-            <select
-              id="primaryPhysician"
-              className="w-full pl-4 py-3 bg-dark-400 rounded-lg outline-none border border-gray-800 focus:border-green-500  placeholder:text-sm placeholder-gray-400 placeholder-opacity-50 transition-all duration-300 text-sm text-gray-500 cursor-pointer"
-              {...register("primaryPhysician")}
-            >
-              <option value="">Primary cara physician</option>
-              {Doctors.map((doctor, i) => (
-                <option key={i} value={doctor.name} className="flex items-center gap-2">
-                  <Image src={doctor.image} width={50} height={50} alt="doctor" />
-                  <span>{doctor.name}</span>
-                </option>
-              ))}
-            </select>
+            <Select value={primaryPhysician} onValueChange={handlePrimaryPhysicianChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Primary care physician" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {Doctors.map((doctor, i) => (
+                    <SelectItem key={i} value={doctor.name}>
+                      <div className="flex items-center gap-2 bg-dark-300 border border-gray-700 p-1 rounded-lg">
+                        <Image src={doctor.image} width={32} height={32} alt="doctor" className="rounded-full border border-dark-400" />
+                        <span>{doctor.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
 
-            {errors.primaryPhysician && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.primaryPhysician.message as string}</p>}
+            {errors.primaryPhysician && primaryPhysician === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Care physician is {errors.primaryPhysician.message as string}</p>}
           </div>
 
           <div className="relative">
@@ -244,6 +264,12 @@ const RegisterForm = ({ user }: { user: User }) => {
             <InputField icon={<RiSortNumberDesc size={18} />} type="text" placeholder="Identification Number" name="identificationNumber" propData={{ ...register("identificationNumber") }} />
 
             {errors.identificationNumber && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.identificationNumber.message as string}</p>}
+          </div>
+
+          <div className="relative">
+            <FileUploader files={identificationDocument} onChange={handleFileUploadChange} />
+
+            {errors.identificationDocument && <p className="absolute -bottom-5 text-violet-500 text-sm">{errors.identificationDocument.message as string}</p>}
           </div>
         </div>
       </section>

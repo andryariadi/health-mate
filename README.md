@@ -96,3 +96,19 @@ Gender {""}
 
 export default GenderRadio; -->
 <!-- GenderRadio before refactor code -->
+
+<!-- select -->
+   <!-- {/* <select
+              id="primaryPhysician"
+              className="w-full pl-4 py-3 bg-dark-400 rounded-lg outline-none border border-gray-800 focus:border-green-500  placeholder:text-sm placeholder-gray-400 placeholder-opacity-50 transition-all duration-300 text-sm text-gray-500 cursor-pointer"
+              {...register("primaryPhysician")}
+            >
+              <option value="">Primary care physician</option>
+              {Doctors.map((doctor, i) => (
+                <option key={i} value={doctor.name} className="flex items-center gap-2">
+                  <Image src={doctor.image} width={50} height={50} alt="doctor" />
+                  <span>{doctor.name}</span>
+                </option>
+              ))}
+            </select> */} -->
+<!-- select -->
