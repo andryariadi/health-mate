@@ -24,7 +24,7 @@ const NewOppointmentPage = async ({ params: { userId } }: SearchParamProps) => {
           </div>
 
           {/* Form */}
-          <AppointmentForm />
+          <AppointmentForm type="create" userId={userId} patientId={patient?.$id ?? ""} />
           <p className="copyright">© 2024 HealthMate</p>
         </div>
       </section>

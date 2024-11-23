@@ -63,8 +63,19 @@ export const getPatient = async (userId: string) => {
   try {
     const patients = await databases.listDocuments(DATABASE_ID!, PATIENT_COLLECTION_ID!, [Query.equal("userId", [userId])]);
 
-    return patients;
+    return patients.documents[0];
   } catch (error) {
     console.log(error, "<---digetPatientError");
+  }
+};
+
+export const createAppointment = async (data: CreateAppointmentParams) => {
+  console.log(data, "<---dicreateAppointmentAction");
+
+  try {
+    // const newAppointment = await databases.createDocument(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, ID.unique(), data);
+    // return { newAppointment, success: true, message: "Created appointment successfully!" };
+  } catch (error) {
+    console.log(error, "<---dicreateAppointmentError");
   }
 };
