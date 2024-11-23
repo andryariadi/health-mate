@@ -58,3 +58,13 @@ export const registerPatient = async ({ identificationDocument, ...patientData }
     console.log(error, "<---diregisterPatientActionError");
   }
 };
+
+export const getPatient = async (userId: string) => {
+  try {
+    const patients = await databases.listDocuments(DATABASE_ID!, PATIENT_COLLECTION_ID!, [Query.equal("userId", [userId])]);
+
+    return patients;
+  } catch (error) {
+    console.log(error, "<---digetPatientError");
+  }
+};

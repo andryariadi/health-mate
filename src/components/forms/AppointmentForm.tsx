@@ -36,6 +36,9 @@ const OppointmentForm = () => {
     setValue,
   } = useForm<z.infer<typeof CreateAppointmentSchema>>({
     resolver: zodResolver(CreateAppointmentSchema),
+    defaultValues: {
+      schedule: new Date(),
+    },
   });
 
   const handleSubmitOppointment: SubmitHandler<z.infer<typeof CreateAppointmentSchema>> = async (data: z.infer<typeof CreateAppointmentSchema>) => {

@@ -1,7 +1,12 @@
-import OppointmentForm from "@/components/forms/OppointmentForm";
 import Image from "next/image";
+import AppointmentForm from "@/components/forms/AppointmentForm";
+import { getPatient } from "@/lib/actions";
 
-const NewOppointmentPage = () => {
+const NewOppointmentPage = async ({ params: { userId } }: SearchParamProps) => {
+  const patient = await getPatient(userId);
+
+  console.log(patient, "<---diappointmentpage");
+
   return (
     <div className="bg-violet-500 max-h-screen h-screen flex">
       {/* Left */}
@@ -19,8 +24,7 @@ const NewOppointmentPage = () => {
           </div>
 
           {/* Form */}
-          <OppointmentForm />
-
+          <AppointmentForm />
           <p className="copyright">© 2024 HealthMate</p>
         </div>
       </section>
