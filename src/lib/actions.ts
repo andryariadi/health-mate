@@ -51,7 +51,9 @@ export const registerPatient = async ({ identificationDocument, ...patientData }
       ...patientData,
     });
 
-    console.log({ InputFile, file, newPatient }, "<---diregisterPatientAction2");
+    return { newPatient, success: true, message: "Patient registered successfully!" };
+
+    // console.log({ InputFile, file, newPatient }, "<---diregisterPatientAction2");
   } catch (error) {
     console.log(error, "<---diregisterPatientActionError");
   }

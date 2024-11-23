@@ -29,6 +29,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import FileUploader from "../FileUploader";
 import { useRouter } from "next/navigation";
 import { registerPatient } from "@/lib/actions";
+import toast from "react-hot-toast";
+import { toastStyle } from "@/lib/utils";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
@@ -36,7 +38,7 @@ const RegisterForm = ({ user }: { user: User }) => {
   const [phoneValue, setPhoneValue] = useState<string | undefined>(user.phone);
   const [emergencyContactNumber, setEmergencyContactNumber] = useState<string | undefined>();
 
-  const [selectedGender, setSelectedGender] = useState<"Male" | "Female" | "Other">("Male");
+  const [selectedGender, setSelectedGender] = useState<"male" | "female" | "other">("male");
 
   const [treatmentConsent, setTreatmentConsent] = useState<false | true>(false);
   const [disclosureConsent, setDisclosureConsent] = useState<false | true>(false);
@@ -44,7 +46,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
 
-  const [primaryPhysician, setPrimaryPhysician] = useState<string>();
+  const [primaryPhyisician, setPrimaryPhyisician] = useState<string>();
 
   const [identificationDocument, setIdentificationDocument] = useState<File[] | undefined>([]);
 
@@ -53,9 +55,9 @@ const RegisterForm = ({ user }: { user: User }) => {
     setIdentificationDocument(identificationDocument);
   };
 
-  const handlePrimaryPhysicianChange = (primaryPhysician?: string) => {
-    setValue("primaryPhysician", primaryPhysician ?? "");
-    setPrimaryPhysician(primaryPhysician);
+  const handleprimaryPhyisicianChange = (primaryPhyisician?: string) => {
+    setValue("primaryPhyisician", primaryPhyisician ?? "");
+    setPrimaryPhyisician(primaryPhyisician);
   };
 
   const handleBirthdateChange = (birthDate: Date | null) => {
@@ -73,9 +75,9 @@ const RegisterForm = ({ user }: { user: User }) => {
     setEmergencyContactNumber(emergencyContactNumber);
   };
 
-  const handleCheckboxChange = (gender?: "Male" | "Female" | "Other") => {
-    setValue("gender", gender ?? "Male");
-    setSelectedGender(gender ?? "Male");
+  const handleCheckboxChange = (gender?: "male" | "female" | "other") => {
+    setValue("gender", gender ?? "male");
+    setSelectedGender(gender ?? "male");
   };
 
   const onTreatmentConsentChange = (treatmentConsent?: false | true) => {
@@ -104,7 +106,7 @@ const RegisterForm = ({ user }: { user: User }) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      gender: "Male",
+      gender: "male",
       birthDate: new Date(),
     },
   });
@@ -134,9 +136,15 @@ const RegisterForm = ({ user }: { user: User }) => {
 
       const res = await registerPatient(patientData);
 
-      // if (res) router.push(`/patients/${user?.$id}/new-oppointment`);
+      if (res?.success) {
+        toast.success(res.message, {
+          style: toastStyle,
+        });
 
-      console.log({ patientData }, "<---dihandleSubmitRegister3");
+        if (res) router.push(`/patients/${user?.$id}/new-oppointment`);
+      }
+
+      console.log({ patientData, res }, "<---dihandleSubmitRegister3");
     } catch (error) {
       console.log(error, "<---dihandleSubmitRegisterError");
     }
@@ -144,7 +152,7 @@ const RegisterForm = ({ user }: { user: User }) => {
     console.log({ data }, "<---dihandleSubmitRegister");
   };
 
-  console.log({ user, errors, treatmentConsent, startDate, primaryPhysician, identificationDocument }, "<---diregisterForm");
+  console.log({ user, errors, treatmentConsent, startDate, primaryPhyisician, identificationDocument }, "<---diregisterForm");
 
   return (
     <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">
@@ -214,7 +222,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
         <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="relative col-span-2">
-            <Select value={primaryPhysician} onValueChange={handlePrimaryPhysicianChange}>
+            <Select value={primaryPhyisician} onValueChange={handleprimaryPhyisicianChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Primary care physician" />
               </SelectTrigger>
@@ -232,7 +240,7 @@ const RegisterForm = ({ user }: { user: User }) => {
               </SelectContent>
             </Select>
 
-            {errors.primaryPhysician && primaryPhysician === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Care physician is {errors.primaryPhysician.message as string}</p>}
+            {errors.primaryPhyisician && primaryPhyisician === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Care physician is {errors.primaryPhyisician.message as string}</p>}
           </div>
 
           <div className="relative">

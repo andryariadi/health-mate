@@ -1,8 +1,8 @@
 import React from "react";
 
 interface GenderRadioProps {
-  onRadioChange: (gender: "Male" | "Female" | "Other") => void;
-  selectedGender: "Male" | "Female" | "Other";
+  onRadioChange: (gender: "male" | "female" | "other") => void;
+  selectedGender: "male" | "female" | "other";
   errors: {
     gender?: {
       message: string;
@@ -10,7 +10,7 @@ interface GenderRadioProps {
   };
 }
 
-const GENDER_OPTIONS: Array<"Male" | "Female" | "Other"> = ["Male", "Female", "Other"];
+const GENDER_OPTIONS: Array<"male" | "female" | "other"> = ["male", "female", "other"];
 
 const GenderRadio: React.FC<GenderRadioProps> = ({ onRadioChange, selectedGender, errors }) => {
   return (
