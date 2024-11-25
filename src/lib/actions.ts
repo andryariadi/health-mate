@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { UserFormValidation } from "./validation";
-import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, storage, users } from "./appwrite.config";
+import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, APPOINTMENT_COLLECTION_ID, storage, users } from "./appwrite.config";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 
@@ -73,8 +73,9 @@ export const createAppointment = async (data: CreateAppointmentParams) => {
   console.log(data, "<---dicreateAppointmentAction");
 
   try {
-    // const newAppointment = await databases.createDocument(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, ID.unique(), data);
-    // return { newAppointment, success: true, message: "Created appointment successfully!" };
+    const newAppointment = await databases.createDocument(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, ID.unique(), data);
+
+    return { newAppointment, success: true, message: "Created appointment successfully!" };
   } catch (error) {
     console.log(error, "<---dicreateAppointmentError");
   }

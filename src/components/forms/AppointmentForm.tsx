@@ -17,6 +17,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateAppointmentSchema } from "@/lib/validation";
 import { z } from "zod";
 import { createAppointment } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import { toastStyle } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 type PatientProps = {
   userId: string;
@@ -25,6 +28,8 @@ type PatientProps = {
 };
 
 const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
+  const router = useRouter();
+
   const [primaryPhysician, setPrimaryPhysician] = useState<string>();
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
@@ -44,6 +49,7 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
+    reset,
   } = useForm<z.infer<typeof CreateAppointmentSchema>>({
     resolver: zodResolver(CreateAppointmentSchema),
     defaultValues: {
@@ -77,6 +83,16 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
         };
 
         const res = await createAppointment(dataAppointment);
+
+        if (res?.success) {
+          reset();
+
+          toast.success(res.message, {
+            style: toastStyle,
+          });
+
+          router.push(`/patients/${userId}/new-appointment/success?appointmentId=${res?.newAppointment?.$id}`);
+        }
 
         console.log({ dataAppointment, res }, "<---dihandleSubmitOppointment2");
       }
