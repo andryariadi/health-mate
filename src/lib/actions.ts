@@ -80,3 +80,13 @@ export const createAppointment = async (data: CreateAppointmentParams) => {
     console.log(error, "<---dicreateAppointmentError");
   }
 };
+
+export const getAppointment = async (appointmentId: string) => {
+  try {
+    const appointment = await databases.getDocument(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, appointmentId);
+
+    return appointment;
+  } catch (error) {
+    console.log(error, "<---digetAppointmentError");
+  }
+};

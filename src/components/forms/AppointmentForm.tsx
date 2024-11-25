@@ -59,7 +59,6 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
 
   const handleSubmitOppointment: SubmitHandler<z.infer<typeof CreateAppointmentSchema>> = async (data: z.infer<typeof CreateAppointmentSchema>) => {
     let status;
-
     switch (type) {
       case "schedule":
         status = "scheduled";
