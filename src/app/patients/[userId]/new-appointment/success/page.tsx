@@ -1,3 +1,4 @@
+import ButtonAppointment from "@/components/ButtonAppointment";
 import { Doctors } from "@/constants";
 import { getAppointment } from "@/lib/actions";
 import { formatDateTime } from "@/lib/utils";
@@ -16,7 +17,7 @@ const SuccessPage = async ({ params, searchParams }: SearchParamProps) => {
   console.log({ userId, appointmentId, appointment, doctor }, "<---disuccessPage");
 
   return (
-    <div className="b-violet-500 flex max-h-screen h-screen px-[5%]">
+    <div className="b-violet-500 flex min-h-screen px-[5%]">
       <div className="b-amber-500 success-img">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -49,6 +50,11 @@ const SuccessPage = async ({ params, searchParams }: SearchParamProps) => {
             <span>{formatDateTime(appointment?.schedule).dateTime}</span>
           </div>
         </section>
+
+        {/* Button */}
+        <ButtonAppointment userId={userId} />
+
+        <p className="copyright">© 2024 HealthMate</p>
       </div>
     </div>
   );

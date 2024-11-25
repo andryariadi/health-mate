@@ -1,10 +1,18 @@
 import PatientForm from "@/components/forms/PatientForm";
+import PassKeyModal from "@/components/PassKeyModal";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+export default function Home({ searchParams }: SearchParamProps) {
+  const isAdmin = searchParams.admin === "true";
+
+  console.log(isAdmin, "<---dihomePage");
+
   return (
     <main className="b-violet-500 flex max-h-screen h-screen">
+      {/* Passkey Modal */}
+      {isAdmin && <PassKeyModal />}
+
       {/* Left */}
       <section className="b-rose-500 remove-scrollbar container my-auto">
         <div className="b-amber-500 sub-container max-w-[496px] space-y-10">
@@ -25,7 +33,7 @@ export default function Home() {
           {/* Copyright and Admin */}
           <div className="text-14-regular flex items-center justify-between">
             <span className="text-dark-600">© 2024 HealthMate</span>
-            <Link href="/?admin=true" className="text-emerald-500 font-semibold">
+            <Link href="/?admin=true" className="text-emerald-500 font-semibold hover:scale-110 transition-all duration-300">
               Admin
             </Link>
           </div>
