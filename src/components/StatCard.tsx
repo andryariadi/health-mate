@@ -2,7 +2,7 @@ import { IconType } from "react-icons/lib";
 
 type StatCardProps = {
   title: string;
-  value: string;
+  value: number | undefined;
   icon: IconType;
   color?: string;
   bottom?: string;
@@ -10,7 +10,7 @@ type StatCardProps = {
   colorBg?: string;
 };
 
-const StatCard = ({ title, value, icon: Icon, color, bottom, right, colorBg }: StatCardProps) => {
+const StatCard = ({ title, value = 0, icon: Icon, color, bottom, right, colorBg }: StatCardProps) => {
   return (
     <div className={`relative bg-gray-800 p-5 rounded-lg shadow-lg overflow-hidden min-w-[20rem]`}>
       <div className="space-y-2">

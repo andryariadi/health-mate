@@ -5,6 +5,7 @@ import { UserFormValidation } from "./validation";
 import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, APPOINTMENT_COLLECTION_ID, storage, users } from "./appwrite.config";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
+import { Appointment } from "@/types/appwrite.type";
 
 export const createUser = async (data: z.infer<typeof UserFormValidation>) => {
   console.log(data, "<---dicreateUserAction");
@@ -88,5 +89,39 @@ export const getAppointment = async (appointmentId: string) => {
     return appointment;
   } catch (error) {
     console.log(error, "<---digetAppointmentError");
+  }
+};
+
+export const getRecentAppointmentList = async () => {
+  try {
+    const appointments = await databases.listDocuments(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, [Query.orderDesc("$createdAt")]);
+
+    const initialCounts = {
+      scheduledCount: 0,
+      pendingCount: 0,
+      cancelledCount: 0,
+    };
+
+    const counts = (appointments.documents as Appointment[]).reduce((acc, curr) => {
+      if ((curr.status = "scheduled")) {
+        acc.scheduledCount += 1;
+      } else if ((curr.status = "pending")) {
+        acc.pendingCount += 1;
+      } else if ((curr.status = "cancelled")) {
+        acc.cancelledCount += 1;
+      }
+
+      return acc;
+    }, initialCounts);
+
+    const data = {
+      totalCount: appointments.documents,
+      ...counts,
+      documents: appointments.documents,
+    };
+
+    return data;
+  } catch (error) {
+    console.log(error, "<---digetRecentAppointmentListError");
   }
 };
