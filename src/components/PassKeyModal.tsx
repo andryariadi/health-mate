@@ -1,18 +1,52 @@
 "use client";
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { decryptKey, encryptKey } from "@/lib/utils";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 const PassKeyModal = () => {
   const router = useRouter();
+  const path = usePathname();
   const [open, setOpen] = useState(true);
   const [passkey, setPasskey] = useState("");
   const [error, setError] = useState("");
+
+  // To prevent if user has already set the passkey
+  const encryptedKey = typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null;
+
+  useEffect(() => {
+    const accessKey = encryptedKey && decryptKey(encryptedKey);
+
+    if (path) {
+      if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
+        setOpen(false);
+        router.push("/admin");
+      } else {
+        setOpen(true);
+      }
+    }
+  }, [encryptedKey]);
+
+  const handleValidatePasskey = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+
+    if (passkey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
+      const encryptedKey = encryptKey(passkey);
+
+      localStorage.setItem("accessKey", encryptedKey);
+
+      setOpen(false);
+
+      console.log(encryptedKey, "<---dihandleValidatePasskey");
+    } else {
+      setError("Invalid passkey, please try again!");
+    }
+  };
 
   const handleCloseModal = () => {
     setOpen(false);
@@ -46,7 +80,9 @@ const PassKeyModal = () => {
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogAction className="shad-primary-btn">Submit Admin Passkey</AlertDialogAction>
+          <AlertDialogAction onClick={handleValidatePasskey} className="shad-primary-btn">
+            Submit Admin Passkey
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
