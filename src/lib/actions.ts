@@ -6,6 +6,7 @@ import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PRO
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { Appointment } from "@/types/appwrite.type";
+import { revalidatePath } from "next/cache";
 
 export const createUser = async (data: z.infer<typeof UserFormValidation>) => {
   console.log(data, "<---dicreateUserAction");
@@ -115,7 +116,7 @@ export const getRecentAppointmentList = async () => {
     }, initialCounts);
 
     const data = {
-      totalCount: appointments.documents,
+      totalCount: appointments.total,
       ...counts,
       documents: appointments.documents,
     };
@@ -123,5 +124,21 @@ export const getRecentAppointmentList = async () => {
     return data;
   } catch (error) {
     console.log(error, "<---digetRecentAppointmentListError");
+  }
+};
+
+export const updateAppointment = async ({ appointmentId, userId, appointment, type }: UpdateAppointmentParams) => {
+  console.log({ appointmentId, userId, appointment, type }, "<---diupdateAppointmentAction");
+
+  try {
+    const updatedAppointment = await databases.updateDocument(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, appointmentId, appointment);
+
+    if (!updatedAppointment) throw new Error("Appointment not found!");
+
+    revalidatePath("/admin");
+
+    return { updatedAppointment, success: true, message: "Created appointment successfully!" };
+  } catch (error) {
+    console.log(error, "<---diupdateAppointmentError");
   }
 };

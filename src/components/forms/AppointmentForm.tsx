@@ -16,18 +16,21 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateAppointmentSchema } from "@/lib/validation";
 import { z } from "zod";
-import { createAppointment } from "@/lib/actions";
+import { createAppointment, updateAppointment } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toastStyle } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { Appointment } from "@/types/appwrite.type";
 
 type PatientProps = {
   userId: string;
   patientId: string;
   type: "create" | "schedule" | "cancel";
+  appointment?: Appointment;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
+const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: PatientProps) => {
   const router = useRouter();
 
   const [primaryPhysician, setPrimaryPhysician] = useState<string>();
@@ -94,6 +97,32 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
         }
 
         console.log({ dataAppointment, res }, "<---dihandleSubmitOppointment2");
+      } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id ?? "",
+          appointment: {
+            primaryPhysician: data.primaryPhysician,
+            schedule: new Date(data.schedule),
+            status: status as Status,
+            cancellationReason: data.cancellationReason,
+          },
+          type,
+        };
+
+        const res = await updateAppointment(appointmentToUpdate);
+
+        if (res?.success) {
+          reset();
+
+          toast.success(res.message, {
+            style: toastStyle,
+          });
+
+          if (setOpen) setOpen(false);
+        }
+
+        console.log({ appointmentToUpdate, res }, "<---dihandleSubmitOppointment3");
       }
     } catch (error) {
       console.log(error, "<---dihandleSubmitOppointmentError");
@@ -123,7 +152,7 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
   return (
     <form onSubmit={handleSubmit(handleSubmitOppointment)} className="bg-rose-600 space-y-10">
       {/* Oppointment Field */}
-      {type === "create" && (
+      {type !== "cancel" && (
         <section className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="relative col-span-2">
             <Select value={primaryPhysician} onValueChange={handlePrimaryPhysicianChange}>
@@ -181,7 +210,7 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
         type="submit"
         disabled={isSubmitting}
         className={`w-full py-3 px-4 bg-gradient-to-r ${
-          type === "create" ? "from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700" : "from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
+          type !== "cancel" ? "from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700" : "from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
         } text-white font-bold rounded-lg shadow-lg  transition-all duration-300 flex items-center justify-center gap-3`}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.95 }}
@@ -199,4 +228,4 @@ const OppointmentForm = ({ type, userId, patientId }: PatientProps) => {
   );
 };
 
-export default OppointmentForm;
+export default AppointmentForm;

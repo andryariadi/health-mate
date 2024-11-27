@@ -5,6 +5,8 @@ import { LuCalendarDays } from "react-icons/lu";
 import { GiSandsOfTime } from "react-icons/gi";
 import { FaRegCalendarTimes } from "react-icons/fa";
 import { getRecentAppointmentList } from "@/lib/actions";
+import { columns } from "@/components/table/Columns";
+import { DataTable } from "@/components/table/DataTable";
 
 const AdminPage = async () => {
   const appointments = await getRecentAppointmentList();
@@ -23,7 +25,7 @@ const AdminPage = async () => {
         <p className="text-16-semibold">Admin Dashboard</p>
       </header>
 
-      <main className="bg-rose-500 admin-main">
+      <main className="bg-rose-700 admin-main">
         <section className="bg-sky-600 w-full space-y-4">
           <h1 className="header">Welcome 👋</h1>
           <p className="text-dark-700">Start the day with managing new appointments</p>
@@ -37,7 +39,8 @@ const AdminPage = async () => {
           <StatCard icon={FaRegCalendarTimes} color="text-rose-500" bottom="-bottom-1" right="-right-3" colorBg="from-rose-600 to-red-900" title="Total number of cancelled appointments" value={appointments?.cancelledCount} />
         </section>
 
-        <div>table</div>
+        {/* Table */}
+        <DataTable columns={columns} data={appointments?.documents} />
       </main>
     </div>
   );
