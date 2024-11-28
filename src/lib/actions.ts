@@ -104,11 +104,11 @@ export const getRecentAppointmentList = async () => {
     };
 
     const counts = (appointments.documents as Appointment[]).reduce((acc, curr) => {
-      if ((curr.status = "scheduled")) {
+      if (curr.status === "scheduled") {
         acc.scheduledCount += 1;
-      } else if ((curr.status = "pending")) {
+      } else if (curr.status === "pending") {
         acc.pendingCount += 1;
-      } else if ((curr.status = "cancelled")) {
+      } else if (curr.status === "cancelled") {
         acc.cancelledCount += 1;
       }
 
@@ -137,7 +137,7 @@ export const updateAppointment = async ({ appointmentId, userId, appointment, ty
 
     revalidatePath("/admin");
 
-    return { updatedAppointment, success: true, message: "Created appointment successfully!" };
+    return { updatedAppointment, success: true, message: "Update appointment successfully!" };
   } catch (error) {
     console.log(error, "<---diupdateAppointmentError");
   }

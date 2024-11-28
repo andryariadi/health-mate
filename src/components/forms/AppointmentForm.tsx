@@ -18,7 +18,7 @@ import { CreateAppointmentSchema } from "@/lib/validation";
 import { z } from "zod";
 import { createAppointment, updateAppointment } from "@/lib/actions";
 import { useRouter } from "next/navigation";
-import { toastStyle } from "@/lib/utils";
+import { formatDateTime, toastStyle } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { Appointment } from "@/types/appwrite.type";
 
@@ -33,7 +33,7 @@ type PatientProps = {
 const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: PatientProps) => {
   const router = useRouter();
 
-  const [primaryPhysician, setPrimaryPhysician] = useState<string>();
+  const [primaryPhysician, setPrimaryPhysician] = useState<string>(appointment ? appointment.primaryPhysician : "");
 
   const [startDate, setStartDate] = useState<Date | null>(new Date());
 
@@ -44,7 +44,7 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
 
   const handlePrimaryPhysicianChange = (primaryPhysician?: string) => {
     setValue("primaryPhysician", primaryPhysician ?? "");
-    setPrimaryPhysician(primaryPhysician);
+    setPrimaryPhysician(primaryPhysician ?? "");
   };
 
   const {
@@ -56,7 +56,11 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
   } = useForm<z.infer<typeof CreateAppointmentSchema>>({
     resolver: zodResolver(CreateAppointmentSchema),
     defaultValues: {
-      schedule: new Date(),
+      primaryPhysician: appointment ? appointment.primaryPhysician : "",
+      schedule: appointment ? new Date(appointment.schedule) : new Date(),
+      reason: appointment ? appointment.reason : "",
+      note: appointment ? appointment.note : "",
+      cancellationReason: appointment ? appointment.cancellationReason ?? "" : "",
     },
   });
 
@@ -147,7 +151,7 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
       buttonIcon = <BsSend size={18} />;
   }
 
-  console.log({ type, userId, patientId }, "<---diappointmentForm");
+  console.log({ type, userId, patientId, appointment }, "<---diappointmentForm");
 
   return (
     <form onSubmit={handleSubmit(handleSubmitOppointment)} className="bg-rose-600 space-y-10">
@@ -162,7 +166,7 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
               <SelectContent>
                 <SelectGroup>
                   {Doctors.map((doctor, i) => (
-                    <SelectItem key={i} value={doctor.name}>
+                    <SelectItem key={i} value={doctor.name} defaultValue={appointment ? appointment.primaryPhysician : ""}>
                       <div className="flex items-center gap-2 bg-dark-300 border border-gray-700 p-1 rounded-lg">
                         <Image src={doctor.image} width={32} height={32} alt="doctor" className="rounded-full border border-dark-400" />
                         <span>{doctor.name}</span>
@@ -189,7 +193,15 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
           </div>
 
           <div className="relative col-span-2">
-            <DatePicker selected={startDate} onChange={handleScheduleChange} timeInputLabel="Time:" dateFormat="yyyy/MM/dd - hh:mm aa" showTimeInput wrapperClassName="date-picker" />
+            <DatePicker
+              selected={startDate}
+              onChange={handleScheduleChange}
+              timeInputLabel="Time:"
+              dateFormat="yyyy/MM/dd - hh:mm aa"
+              showTimeInput
+              wrapperClassName="date-picker"
+              value={appointment ? formatDateTime(appointment.schedule).dateTime : new Date().toISOString()}
+            />
 
             <CiCalendar size={22} className="absolute left-3 top-3 text-green-500" />
 
