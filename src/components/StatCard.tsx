@@ -14,14 +14,14 @@ const StatCard = ({ title, value = 0, icon: Icon, color, bottom, right, colorBg 
   return (
     <div className={`relative bg-gray-800 p-5 rounded-lg shadow-lg overflow-hidden min-w-[20rem]`}>
       <div className="space-y-2">
-        <p className={`${color} text-sm max-w-[10rem]`}>{title}</p>
+        <p className={`${color} text-sm max-w-[10rem] whitespace-nowrap`}>{title}</p>
         <h3 className="text-white text-3xl font-bold">{value}</h3>
       </div>
 
       <div className={`absolute inset-0 bg-gradient-to-bl ${colorBg} opacity-30`} />
 
       <div className={`absolute ${bottom} ${right} ${color} opacity-50`}>
-        <Icon size={135} />
+        <Icon size={115} />
       </div>
     </div>
   );

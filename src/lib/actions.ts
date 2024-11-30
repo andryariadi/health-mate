@@ -6,7 +6,7 @@ import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PRO
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { Appointment } from "@/types/appwrite.type";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 export const createUser = async (data: z.infer<typeof UserFormValidation>) => {
   console.log(data, "<---dicreateUserAction");
@@ -93,39 +93,77 @@ export const getAppointment = async (appointmentId: string) => {
   }
 };
 
-export const getRecentAppointmentList = async () => {
-  try {
-    const appointments = await databases.listDocuments(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, [Query.orderDesc("$createdAt")]);
+export const getRecentAppointmentList = unstable_cache(
+  async () => {
+    try {
+      const appointments = await databases.listDocuments(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, [Query.orderDesc("$createdAt")]);
 
-    const initialCounts = {
-      scheduledCount: 0,
-      pendingCount: 0,
-      cancelledCount: 0,
-    };
+      const initialCounts = {
+        scheduledCount: 0,
+        pendingCount: 0,
+        cancelledCount: 0,
+      };
 
-    const counts = (appointments.documents as Appointment[]).reduce((acc, curr) => {
-      if (curr.status === "scheduled") {
-        acc.scheduledCount += 1;
-      } else if (curr.status === "pending") {
-        acc.pendingCount += 1;
-      } else if (curr.status === "cancelled") {
-        acc.cancelledCount += 1;
-      }
+      const counts = (appointments.documents as Appointment[]).reduce((acc, curr) => {
+        if (curr.status === "scheduled") {
+          acc.scheduledCount += 1;
+        } else if (curr.status === "pending") {
+          acc.pendingCount += 1;
+        } else if (curr.status === "cancelled") {
+          acc.cancelledCount += 1;
+        }
 
-      return acc;
-    }, initialCounts);
+        return acc;
+      }, initialCounts);
 
-    const data = {
-      totalCount: appointments.total,
-      ...counts,
-      documents: appointments.documents,
-    };
+      const data = {
+        totalCount: appointments.total,
+        ...counts,
+        documents: appointments.documents,
+      };
 
-    return data;
-  } catch (error) {
-    console.log(error, "<---digetRecentAppointmentListError");
-  }
-};
+      return data;
+    } catch (error) {
+      console.log(error, "<---getCachedRecentAppointmentListError");
+    }
+  },
+  ["recentAppointments"],
+  { revalidate: 60, tags: ["appointments"] }
+);
+
+// export const getRecentAppointmentList = async () => {
+//   try {
+//     const appointments = await databases.listDocuments(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, [Query.orderDesc("$createdAt")]);
+
+//     const initialCounts = {
+//       scheduledCount: 0,
+//       pendingCount: 0,
+//       cancelledCount: 0,
+//     };
+
+//     const counts = (appointments.documents as Appointment[]).reduce((acc, curr) => {
+//       if (curr.status === "scheduled") {
+//         acc.scheduledCount += 1;
+//       } else if (curr.status === "pending") {
+//         acc.pendingCount += 1;
+//       } else if (curr.status === "cancelled") {
+//         acc.cancelledCount += 1;
+//       }
+
+//       return acc;
+//     }, initialCounts);
+
+//     const data = {
+//       totalCount: appointments.total,
+//       ...counts,
+//       documents: appointments.documents,
+//     };
+
+//     return data;
+//   } catch (error) {
+//     console.log(error, "<---digetRecentAppointmentListError");
+//   }
+// };
 
 export const updateAppointment = async ({ appointmentId, userId, appointment, type }: UpdateAppointmentParams) => {
   console.log({ appointmentId, userId, appointment, type }, "<---diupdateAppointmentAction");
@@ -135,7 +173,8 @@ export const updateAppointment = async ({ appointmentId, userId, appointment, ty
 
     if (!updatedAppointment) throw new Error("Appointment not found!");
 
-    revalidatePath("/admin");
+    // ISR using revalidateTag ---> automatically updates the latest data without refreshing the page or exiting the page and then returning to the previous page
+    // revalidateTag("appointments");
 
     return { updatedAppointment, success: true, message: "Update appointment successfully!" };
   } catch (error) {

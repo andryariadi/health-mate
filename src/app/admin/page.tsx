@@ -4,11 +4,13 @@ import Link from "next/link";
 import { LuCalendarDays } from "react-icons/lu";
 import { GiSandsOfTime } from "react-icons/gi";
 import { FaRegCalendarTimes } from "react-icons/fa";
-import { getRecentAppointmentList } from "@/lib/actions";
 import { columns } from "@/components/table/Columns";
 import { DataTable } from "@/components/table/DataTable";
+import { getRecentAppointmentList } from "@/lib/actions";
 
 const AdminPage = async () => {
+  // const appointments = await getAppoinyemts();
+
   const appointments = await getRecentAppointmentList();
 
   console.log(appointments, "<---diadminPage");
@@ -32,11 +34,11 @@ const AdminPage = async () => {
         </section>
 
         <section className="bg-emerald-500 admin-stat">
-          <StatCard icon={LuCalendarDays} color="text-yellow-500" bottom="-bottom-2" right="-right-3" colorBg="from-yellow-600 to-amber-900" title="Total number of scheduled appointments" value={appointments?.scheduledCount} />
+          <StatCard icon={LuCalendarDays} color="text-yellow-500" bottom="-bottom-2" right="-right-3" colorBg="from-yellow-600 to-amber-900" title="Scheduled appointments" value={appointments?.scheduledCount} />
 
-          <StatCard icon={GiSandsOfTime} color="text-cyan-500" bottom="-bottom-2" right="-right-7" colorBg="from-cyan-600 to-sky-900" title="Total number of pending appointments" value={appointments?.pendingCount} />
+          <StatCard icon={GiSandsOfTime} color="text-cyan-500" bottom="-bottom-2" right="-right-6" colorBg="from-cyan-600 to-sky-900" title="Pending appointments" value={appointments?.pendingCount} />
 
-          <StatCard icon={FaRegCalendarTimes} color="text-rose-500" bottom="-bottom-1" right="-right-3" colorBg="from-rose-600 to-red-900" title="Total number of cancelled appointments" value={appointments?.cancelledCount} />
+          <StatCard icon={FaRegCalendarTimes} color="text-rose-500" bottom="-bottom-1" right="-right-2" colorBg="from-rose-600 to-red-900" title="Cancelled appointments" value={appointments?.cancelledCount} />
         </section>
 
         {/* Table */}
