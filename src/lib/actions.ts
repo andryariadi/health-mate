@@ -2,11 +2,12 @@
 
 import { z } from "zod";
 import { UserFormValidation } from "./validation";
-import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, APPOINTMENT_COLLECTION_ID, storage, users } from "./appwrite.config";
+import { BUCKET_ID, DATABASE_ID, databases, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, APPOINTMENT_COLLECTION_ID, storage, users, messaging } from "./appwrite.config";
 import { ID, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { Appointment } from "@/types/appwrite.type";
-import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
+import { formatDateTime } from "./utils";
 
 export const createUser = async (data: z.infer<typeof UserFormValidation>) => {
   console.log(data, "<---dicreateUserAction");
@@ -131,6 +132,7 @@ export const getRecentAppointmentList = unstable_cache(
   { revalidate: 60, tags: ["appointments"] }
 );
 
+// if you want to use it without caching nextjs then you can caching using react-query
 // export const getRecentAppointmentList = async () => {
 //   try {
 //     const appointments = await databases.listDocuments(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, [Query.orderDesc("$createdAt")]);
@@ -173,11 +175,33 @@ export const updateAppointment = async ({ appointmentId, userId, appointment, ty
 
     if (!updatedAppointment) throw new Error("Appointment not found!");
 
+    const smsMessage = `
+    Hi, it's HealthMate.
+    ${
+      type === "schedule"
+        ? `Your appointment has been scheduled for ${formatDateTime(appointment.schedule).dateTime} with dr ${appointment.primaryPhysician}`
+        : `We regret to inform you that your appointment has been cancelled for the following reason: ${appointment.cancellationReason}`
+    }
+    
+    `;
+
+    await sendSMSNotification(userId, smsMessage);
+
     // ISR using revalidateTag ---> automatically updates the latest data without refreshing the page or exiting the page and then returning to the previous page
-    // revalidateTag("appointments");
+    revalidateTag("appointments");
 
     return { updatedAppointment, success: true, message: "Update appointment successfully!" };
   } catch (error) {
     console.log(error, "<---diupdateAppointmentError");
+  }
+};
+
+export const sendSMSNotification = async (userId: string, content: string) => {
+  try {
+    const message = await messaging.createSms(ID.unique(), content, [], [userId]);
+
+    return { message, success: true, messages: "SMS sent successfully!" };
+  } catch (error) {
+    console.log(error, "<---disendSMSNotificationError");
   }
 };
