@@ -141,7 +141,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           style: toastStyle,
         });
 
-        if (res) router.push(`/patients/${user?.$id}/new-oppointment`);
+        if (res) router.push(`/patients/${user?.$id}/new-appointment`);
       }
 
       console.log({ patientData, res }, "<---dihandleSubmitRegister3");

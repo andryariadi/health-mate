@@ -2,8 +2,13 @@ import RegisterForm from "@/components/forms/RegisterForm";
 import { getUser } from "@/lib/actions";
 import Image from "next/image";
 
-const PatientRegisterPage = async ({ params }: { params: { userId: string } }) => {
-  const { userId } = params;
+type ParamsProp = Promise<{
+  params: { [key: string]: string };
+}>;
+
+const PatientRegisterPage = async (props: ParamsProp) => {
+  const { params } = await props;
+  const userId = params.userId;
 
   const user = await getUser(userId);
 

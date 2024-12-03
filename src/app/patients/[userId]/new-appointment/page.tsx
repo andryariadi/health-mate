@@ -12,7 +12,7 @@ const NewOppointmentPage = async (props: ParamsProp) => {
   const userId = params.userId;
   const patient = await getPatient(userId);
 
-  console.log({ props, patient }, "<---diappointmentpage");
+  console.log({ props, params, userId }, "<---diappointmentpage");
 
   return (
     <div className="max-h-screen h-screen flex">
