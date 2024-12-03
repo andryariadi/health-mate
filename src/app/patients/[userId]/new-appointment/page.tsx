@@ -8,10 +8,10 @@ const NewOppointmentPage = async ({ params: { userId } }: SearchParamProps) => {
   console.log(patient, "<---diappointmentpage");
 
   return (
-    <div className="bg-violet-500 max-h-screen h-screen flex">
+    <div className="b-violet-500 max-h-screen h-screen flex">
       {/* Left */}
-      <section className="bg-amber-500 remove-scrollbar container">
-        <div className="bg-sky-600 sub-container max-w-[860px] flex-1 space-y-10">
+      <section className="b-amber-500 remove-scrollbar container">
+        <div className="b-sky-600 sub-container max-w-[860px] flex-1 space-y-10">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="logo" width={35} height={35} />
@@ -30,7 +30,7 @@ const NewOppointmentPage = async ({ params: { userId } }: SearchParamProps) => {
       </section>
 
       {/* Right */}
-      <Image src="/assets/images/appointment-img.png" height={1000} width={1000} alt="patient" className="side-img max-w-[390px]" />
+      <Image src="/assets/images/appointment-img.png" height={1000} width={1000} alt="patient" className="side-img max-w-[300px] lg:max-w-[390px]" />
     </div>
   );
 };

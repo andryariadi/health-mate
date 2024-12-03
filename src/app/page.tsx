@@ -9,7 +9,7 @@ export default function Home({ searchParams }: SearchParamProps) {
   console.log(isAdmin, "<---dihomePage");
 
   return (
-    <main className="b-violet-500 flex max-h-screen h-screen">
+    <main className="b-violet-500 flex flex-col lg:flex-row min-h-screen h-screen">
       {/* Passkey Modal */}
       {isAdmin && <PassKeyModal />}
 
@@ -41,7 +41,11 @@ export default function Home({ searchParams }: SearchParamProps) {
       </section>
 
       {/* Right */}
-      <Image src="/assets/images/onboarding-img.png" alt="patient" height={1000} width={1000} className="max-w-[50%] side-img" />
+      <div className="b-emerald-500 w-full lg:w-[50%] h-full md:h-[50%]">
+        <div className="b-sky-700 relative w-full h-[200%]">
+          <Image src="/assets/images/onboarding-img.png" alt="patient" fill className="object-cover" />
+        </div>
+      </div>
     </main>
   );
 }

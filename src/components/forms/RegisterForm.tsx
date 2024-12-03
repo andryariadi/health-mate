@@ -155,12 +155,12 @@ const RegisterForm = ({ user }: { user: User }) => {
   console.log({ user, errors, treatmentConsent, startDate, primaryPhyisician, identificationDocument }, "<---diregisterForm");
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitRegister)} className="bg-rose-600 space-y-10">
+    <form onSubmit={handleSubmit(handleSubmitRegister)} className="b-rose-600 space-y-10">
       {/* Personal Information */}
-      <section className="bg-violet-500 space-y-5">
+      <section className="b-violet-500 space-y-5">
         <h2 className="sub-header">Personal Information</h2>
-        <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="relative col-span-2">
+        <div className="b-lime-600 grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="relative lg:col-span-2">
             <InputField icon={<FaBarsStaggered size={18} />} type="text" placeholder="Full Name" name="name" propData={{ ...register("name") }} />
 
             {errors.name && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.name.message as string}</p>}
@@ -178,7 +178,7 @@ const RegisterForm = ({ user }: { user: User }) => {
             {errors.phone && phoneValue === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Phone is {errors.phone.message as string}</p>}
           </div>
 
-          <div className="relative">
+          <div className="relative g:col-span-2">
             <DatePicker selected={startDate} onChange={handleBirthdateChange} timeInputLabel="Time:" dateFormat="yyyy/MM/dd" showTimeInput wrapperClassName="date-picker" />
 
             <CiCalendar size={22} className="absolute left-3 top-3 text-green-500" />
@@ -186,7 +186,7 @@ const RegisterForm = ({ user }: { user: User }) => {
             {errors.birthDate && startDate === null && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.birthDate.message as string}</p>}
           </div>
 
-          <div className="relative">
+          <div className="relative g:col-span-2">
             <GenderRadio onRadioChange={handleCheckboxChange} selectedGender={selectedGender} errors={{ gender: errors?.gender as { message: string } }} />
           </div>
 
@@ -217,11 +217,10 @@ const RegisterForm = ({ user }: { user: User }) => {
       </section>
 
       {/* Medical Information */}
-      <section className="bg-fuchsia-500 space-y-5">
+      <section className="b-fuchsia-500 space-y-5">
         <h2 className="sub-header">Medical Information</h2>
-
-        <div className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="relative col-span-2">
+        <div className="b-lime-600 grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="relative lg:col-span-2">
             <Select value={primaryPhyisician} onValueChange={handleprimaryPhyisicianChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Primary care physician" />
@@ -282,10 +281,9 @@ const RegisterForm = ({ user }: { user: User }) => {
       </section>
 
       {/* Identification and Verification */}
-      <section className="bg-sky-500 space-y-5">
+      <section className="b-sky-500 space-y-5">
         <h2 className="sub-header">Identification and Verification</h2>
-
-        <div className="bg-lime-600 grid grid-cols-1 gap-10">
+        <div className="b-lime-600 grid grid-cols-1 gap-10">
           <div className="relative">
             <select
               id="identificationType"
@@ -318,10 +316,9 @@ const RegisterForm = ({ user }: { user: User }) => {
       </section>
 
       {/* Consent and Privacy */}
-      <section className="bg-emerald-500 space-y-5">
+      <section className="b-emerald-500 space-y-5">
         <h2 className="sub-header">Consent and Privacy</h2>
-
-        <div className="bg-lime-600 grid grid-cols-1 gap-7">
+        <div className="b-lime-600 grid grid-cols-1 gap-7">
           <PrivacyCheckbox label="I consent to receive treatment for my health condition." onCheckboxChange={onTreatmentConsentChange} selectedBoolean={treatmentConsent} error={errors.treatmentConsent?.message as string} />
 
           <PrivacyCheckbox

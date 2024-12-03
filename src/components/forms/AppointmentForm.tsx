@@ -154,10 +154,10 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
   console.log({ type, userId, patientId, appointment }, "<---diappointmentForm");
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitOppointment)} className="bg-rose-600 space-y-10">
+    <form onSubmit={handleSubmit(handleSubmitOppointment)} className="b-rose-600 space-y-10">
       {/* Oppointment Field */}
       {type !== "cancel" && (
-        <section className="bg-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <section className="b-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="relative col-span-2">
             <Select value={primaryPhysician} onValueChange={handlePrimaryPhysicianChange}>
               <SelectTrigger>
@@ -180,13 +180,13 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
             {errors.primaryPhysician && primaryPhysician === undefined && <p className="absolute -bottom-5 text-red-500 text-sm">Care physician is {errors.primaryPhysician.message as string}</p>}
           </div>
 
-          <div className="relative">
+          <div className="relative col-span-2 lg:col-span-1">
             <TextareaField id="reason" rows={5} cols={30} placeholder={`Reason for oppointment\nex: Annual montly check-up.`} propsData={{ ...register("reason") }} />
 
             {errors.reason && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.reason.message as string}</p>}
           </div>
 
-          <div className="relative">
+          <div className="relative col-span-2 lg:col-span-1">
             <TextareaField id="note" rows={5} cols={30} placeholder={`Additional comments/notes\nex: Prefer afternoon oppointments, if possible.`} propsData={{ ...register("note") }} />
 
             {errors.note && <p className="absolute -bottom-5 text-red-500 text-sm">{errors.note.message as string}</p>}
