@@ -12,7 +12,7 @@ type StatCardProps = {
 
 const StatCard = ({ title, value = 0, icon: Icon, color, bottom, right, colorBg }: StatCardProps) => {
   return (
-    <div className={`relative bg-gray-800 p-5 rounded-lg shadow-lg overflow-hidden min-w-[20rem]`}>
+    <div className={`relative bg-gray-800 p-5 rounded-lg shadow-lg overflow-hidden min-w-[13rem] lg:min-w-[20rem]`}>
       <div className="space-y-2">
         <p className={`${color} text-sm max-w-[10rem] whitespace-nowrap`}>{title}</p>
         <h3 className="text-white text-3xl font-bold">{value}</h3>

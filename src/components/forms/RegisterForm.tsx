@@ -155,11 +155,11 @@ const RegisterForm = ({ user }: { user: User }) => {
   console.log({ user, errors, treatmentConsent, startDate, primaryPhyisician, identificationDocument }, "<---diregisterForm");
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitRegister)} className="b-rose-600 space-y-10">
+    <form onSubmit={handleSubmit(handleSubmitRegister)} className="space-y-10">
       {/* Personal Information */}
-      <section className="b-violet-500 space-y-5">
+      <section className="space-y-5">
         <h2 className="sub-header">Personal Information</h2>
-        <div className="b-lime-600 grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="relative lg:col-span-2">
             <InputField icon={<FaBarsStaggered size={18} />} type="text" placeholder="Full Name" name="name" propData={{ ...register("name") }} />
 
@@ -217,9 +217,9 @@ const RegisterForm = ({ user }: { user: User }) => {
       </section>
 
       {/* Medical Information */}
-      <section className="b-fuchsia-500 space-y-5">
+      <section className="space-y-5">
         <h2 className="sub-header">Medical Information</h2>
-        <div className="b-lime-600 grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="relative lg:col-span-2">
             <Select value={primaryPhyisician} onValueChange={handleprimaryPhyisicianChange}>
               <SelectTrigger>
@@ -281,9 +281,9 @@ const RegisterForm = ({ user }: { user: User }) => {
       </section>
 
       {/* Identification and Verification */}
-      <section className="b-sky-500 space-y-5">
+      <section className="space-y-5">
         <h2 className="sub-header">Identification and Verification</h2>
-        <div className="b-lime-600 grid grid-cols-1 gap-10">
+        <div className="grid grid-cols-1 gap-10">
           <div className="relative">
             <select
               id="identificationType"
@@ -316,9 +316,9 @@ const RegisterForm = ({ user }: { user: User }) => {
       </section>
 
       {/* Consent and Privacy */}
-      <section className="b-emerald-500 space-y-5">
+      <section className="space-y-5">
         <h2 className="sub-header">Consent and Privacy</h2>
-        <div className="b-lime-600 grid grid-cols-1 gap-7">
+        <div className="grid grid-cols-1 gap-7">
           <PrivacyCheckbox label="I consent to receive treatment for my health condition." onCheckboxChange={onTreatmentConsentChange} selectedBoolean={treatmentConsent} error={errors.treatmentConsent?.message as string} />
 
           <PrivacyCheckbox

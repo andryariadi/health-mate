@@ -2,16 +2,23 @@ import Image from "next/image";
 import AppointmentForm from "@/components/forms/AppointmentForm";
 import { getPatient } from "@/lib/actions";
 
-const NewOppointmentPage = async ({ params: { userId } }: SearchParamProps) => {
+type ParamsProp = Promise<{
+  params: { [key: string]: string };
+}>;
+
+const NewOppointmentPage = async (props: ParamsProp) => {
+  const { params } = await props;
+
+  const userId = params.userId;
   const patient = await getPatient(userId);
 
-  console.log(patient, "<---diappointmentpage");
+  console.log({ props, patient }, "<---diappointmentpage");
 
   return (
-    <div className="b-violet-500 max-h-screen h-screen flex">
+    <div className="max-h-screen h-screen flex">
       {/* Left */}
-      <section className="b-amber-500 remove-scrollbar container">
-        <div className="b-sky-600 sub-container max-w-[860px] flex-1 space-y-10">
+      <section className="remove-scrollbar container">
+        <div className="sub-container max-w-[860px] flex-1 space-y-10">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="logo" width={35} height={35} />

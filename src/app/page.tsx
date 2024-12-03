@@ -3,19 +3,25 @@ import PassKeyModal from "@/components/PassKeyModal";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home({ searchParams }: SearchParamProps) {
+type SearchParamProp = Promise<{
+  searchParams: { [key: string]: string | string[] | undefined };
+}>;
+
+export default async function Home(props: SearchParamProp) {
+  const { searchParams } = await props;
+
   const isAdmin = searchParams.admin === "true";
 
-  console.log(isAdmin, "<---dihomePage");
+  console.log({ props, isAdmin }, "<---dihomePage");
 
   return (
-    <main className="b-violet-500 flex flex-col lg:flex-row min-h-screen h-screen">
+    <main className="flex flex-col lg:flex-row min-h-screen h-screen">
       {/* Passkey Modal */}
       {isAdmin && <PassKeyModal />}
 
       {/* Left */}
-      <section className="b-rose-500 remove-scrollbar container my-auto">
-        <div className="b-amber-500 sub-container max-w-[496px] space-y-10">
+      <section className="remove-scrollbar container my-auto">
+        <div className="sub-container max-w-[496px] space-y-10">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="logo" width={35} height={35} />
@@ -41,7 +47,7 @@ export default function Home({ searchParams }: SearchParamProps) {
       </section>
 
       {/* Right */}
-      <div className="b-emerald-500 w-full lg:w-[50%] h-full md:h-[50%]">
+      <div className="w-full lg:w-[50%] h-full md:h-[50%]">
         <div className="b-sky-700 relative w-full h-[200%]">
           <Image src="/assets/images/onboarding-img.png" alt="patient" fill className="object-cover" />
         </div>

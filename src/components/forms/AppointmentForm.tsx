@@ -154,10 +154,10 @@ const AppointmentForm = ({ type, userId, patientId, appointment, setOpen }: Pati
   console.log({ type, userId, patientId, appointment }, "<---diappointmentForm");
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitOppointment)} className="b-rose-600 space-y-10">
+    <form onSubmit={handleSubmit(handleSubmitOppointment)} className="space-y-10">
       {/* Oppointment Field */}
       {type !== "cancel" && (
-        <section className="b-lime-600 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="relative col-span-2">
             <Select value={primaryPhysician} onValueChange={handlePrimaryPhysicianChange}>
               <SelectTrigger>

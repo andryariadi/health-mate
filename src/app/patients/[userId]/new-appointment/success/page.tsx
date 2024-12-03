@@ -6,7 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { CiCalendar } from "react-icons/ci";
 
-const SuccessPage = async ({ params, searchParams }: SearchParamProps) => {
+type SearchParamProps = Promise<{
+  params: { [key: string]: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}>;
+
+const SuccessPage = async (props: SearchParamProps) => {
+  const { params, searchParams } = await props;
+
   const userId = params.userId ?? "";
   const appointmentId = (searchParams.appointmentId as string) ?? "";
 
@@ -14,11 +21,11 @@ const SuccessPage = async ({ params, searchParams }: SearchParamProps) => {
 
   const doctor = Doctors.find((doctor) => doctor.name === appointment?.primaryPhysician);
 
-  console.log({ userId, appointmentId, appointment, doctor }, "<---disuccessPage");
+  console.log({ props, userId, appointmentId, appointment, doctor }, "<---disuccessPage");
 
   return (
-    <div className="b-violet-500 flex min-h-screen px-[5%]">
-      <div className="b-amber-500 success-img">
+    <div className="flex min-h-screen px-[5%]">
+      <div className="success-img">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.svg" alt="logo" width={35} height={35} />
@@ -26,7 +33,7 @@ const SuccessPage = async ({ params, searchParams }: SearchParamProps) => {
         </Link>
 
         {/* Title */}
-        <section className="b-sky-500 flex flex-col items-center space-y-5">
+        <section className="flex flex-col items-center space-y-5">
           <Image src="/assets/gifs/success.gif" alt="success" height={300} width={280} />
 
           <h2 className="header max-w-[600px] text-center">
@@ -35,7 +42,7 @@ const SuccessPage = async ({ params, searchParams }: SearchParamProps) => {
           <p>We&apos;ll be in touch shortly to confirm.</p>
         </section>
 
-        <section className="b-rose-500 request-details">
+        <section className="request-details">
           <p>Requested appointment details: </p>
 
           {/* Doctoc  */}

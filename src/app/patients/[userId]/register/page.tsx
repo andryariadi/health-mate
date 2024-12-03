@@ -8,10 +8,10 @@ const PatientRegisterPage = async ({ params }: { params: { userId: string } }) =
   const user = await getUser(userId);
 
   return (
-    <div className="b-violet-500 max-h-screen h-screen flex">
+    <div className="max-h-screen h-screen flex">
       {/* Left */}
-      <section className="b-amber-500 remove-scrollbar container overflow-y-scroll">
-        <div className="b-sky-600 sub-container max-w-[860px] flex-1 space-y-10">
+      <section className="remove-scrollbar container overflow-y-scroll">
+        <div className="sub-container max-w-[860px] flex-1 space-y-10">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="logo" width={35} height={35} />
